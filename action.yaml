@@ -1,0 +1,12 @@
+name: "GitHub Release Creator"
+description: "Create a GitHub release for the tagged version"
+author: "[Your Name]"
+
+inputs:
+  GITHUB_TOKEN:
+    description: "GitHub token"
+    required: true
+
+runs:
+  using: "node16"
+  main: "release/github_release.js"
