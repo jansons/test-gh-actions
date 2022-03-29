@@ -1,0 +1,23 @@
+{
+  "name": "test-gh-actions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jansons/test-gh-actions.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jansons/test-gh-actions/issues"
+  },
+  "homepage": "https://github.com/jansons/test-gh-actions#readme",
+  "dependencies": {
+    "@actions/core": "^1.6.0"
+  }
+}
