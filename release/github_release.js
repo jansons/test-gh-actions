@@ -66,7 +66,7 @@ function linkDeps(log) {
 async function getCommits() {
   try {
     const { stdout } = await exec(
-      'git log --pretty=format:%s $(git describe --abbrev=0 HEAD^)..',
+      'git log --pretty=format:%s $(git describe --tags --abbrev=0 HEAD^)..',
     )
 
     return stdout
