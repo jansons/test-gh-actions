@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 
-const util = require('util')
+import util from 'util'
+import { context, getOctokit } from '@actions/github'
+
 const exec = util.promisify(require('child_process').exec)
 
-const { context, getOctokit } = require('@actions/github')
+type LogGroup = 'Features' | 'Fixes' | 'Dependencies' | 'Internal'
+type ParsedLine = { type?: LogGroup; log: string }
 
-function parseLine(line) {
+function parseLine(line: string): ParsedLine {
   const splitIdx = line.indexOf(':')
 
   if (splitIdx !== -1) {
@@ -18,7 +21,7 @@ function parseLine(line) {
   return { type: 'Internal', log: line }
 }
 
-function logType(prefix) {
+function logType(prefix: string): LogGroup | undefined {
   switch (prefix) {
     case 'feat':
       return 'Features'
@@ -27,13 +30,13 @@ function logType(prefix) {
     case 'deps':
       return 'Dependencies'
     case 'chore(release)':
-      return null
+      return undefined
     default:
       return 'Internal'
   }
 }
 
-function linkDeps(log) {
+function linkDeps(log: string): string {
   const matches = log.match(
     /^Update (Alpha|Beta|Omega) to v?([0-9]+\.[0-9]+\.[0-9]+)$/,
   )
@@ -65,7 +68,7 @@ function linkDeps(log) {
   return `Update ${name} to [${version}](${releaseUrl})`
 }
 
-async function getCommits() {
+async function getCommits(): Promise<ParsedLine[]> {
   try {
     const { stdout } = await exec(
       'git log --pretty=format:%s $(git describe --tags --abbrev=0 HEAD^)..',
@@ -74,14 +77,14 @@ async function getCommits() {
     return stdout
       .split('\n')
       .map(parseLine)
-      .filter((x) => !!x.type)
+      .filter((line: ParsedLine) => !!line.type)
   } catch (err) {
-    console.error(err.stderr)
+    console.error(err)
     return []
   }
 }
 
-function markdownChangelog(lines) {
+function markdownChangelog(lines: ParsedLine[]): string {
   let body = []
 
   const features = lines.filter((x) => x.type === 'Features')
@@ -115,9 +118,16 @@ function markdownChangelog(lines) {
   return body.join('\n').trim()
 }
 
-async function run() {
+async function run(): Promise<void> {
+  if (!process.env.GITHUB_REF) {
+    throw new Error('Not GITHUB_REF provided')
+  }
+  if (!process.env.GITHUB_TOKEN) {
+    throw new Error('Not GITHUB_TOKEN provided')
+  }
+
   const lines = await getCommits()
-  const changelog = await markdownChangelog(lines)
+  const changelog = markdownChangelog(lines)
   // console.log(changelog)
 
   const {
@@ -126,6 +136,9 @@ async function run() {
 
   const tagName = process.env.GITHUB_REF.replace('refs/tags/', '')
 
+  if (!process.env.GITHUB_TOKEN) {
+    throw new Error('Not GITHUB_TOKEN provided')
+  }
   await getOctokit(process.env.GITHUB_TOKEN).rest.repos.createRelease({
     owner,
     repo,
