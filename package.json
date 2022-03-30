@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/jansons/test-gh-actions#readme",
   "dependencies": {
-    "@actions/core": "^1.6.0"
+    "@actions/github": "^5.0.0"
   }
 }
