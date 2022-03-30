@@ -1,7 +1,0 @@
-name: 'GitHub Release Creator'
-description: 'Create a GitHub release for the tagged version'
-author: '[Your Name]'
-
-runs:
-  using: 'node16'
-  main: 'release/github_release.js'
