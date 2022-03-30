@@ -36,4 +36,4 @@ jobs:
       - name: Create new release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: .github/action.js
+        run: dist/index.js
