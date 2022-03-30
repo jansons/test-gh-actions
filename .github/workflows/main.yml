@@ -31,6 +31,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: ./
+      - uses: actions/setup-node@v2
+
+      - name: Create new release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: .github/action.js
