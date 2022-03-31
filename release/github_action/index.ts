@@ -13,12 +13,12 @@ function parseLine(line: string): ParsedLine {
 
   if (splitIdx !== -1) {
     const type = logType(line.substring(0, splitIdx))
-    const log = line.substring(splitIdx + 1).trim()
+    const log = capitalizeFirst(line.substring(splitIdx + 1).trim())
 
     return { type, log }
   }
 
-  return { type: 'Internal', log: line }
+  return { type: 'Internal', log: capitalizeFirst(line) }
 }
 
 function logType(prefix: string): LogGroup | undefined {
@@ -28,12 +28,17 @@ function logType(prefix: string): LogGroup | undefined {
     case 'fix':
       return 'Fixes'
     case 'deps':
+    case 'chore(deps)':
       return 'Dependencies'
     case 'chore(release)':
       return undefined
     default:
       return 'Internal'
   }
+}
+
+function capitalizeFirst(input: string): string {
+  return input.charAt(0).toUpperCase() + input.slice(1)
 }
 
 function linkDeps(log: string): string {
@@ -120,10 +125,10 @@ function markdownChangelog(lines: ParsedLine[]): string {
 
 async function run(): Promise<void> {
   if (!process.env.GITHUB_REF) {
-    throw new Error('Not GITHUB_REF provided')
+    throw new Error('No GITHUB_REF provided')
   }
   if (!process.env.GITHUB_TOKEN) {
-    throw new Error('Not GITHUB_TOKEN provided')
+    throw new Error('No GITHUB_TOKEN provided')
   }
 
   const lines = await getCommits()
@@ -136,9 +141,6 @@ async function run(): Promise<void> {
 
   const tagName = process.env.GITHUB_REF.replace('refs/tags/', '')
 
-  if (!process.env.GITHUB_TOKEN) {
-    throw new Error('Not GITHUB_TOKEN provided')
-  }
   await getOctokit(process.env.GITHUB_TOKEN).rest.repos.createRelease({
     owner,
     repo,

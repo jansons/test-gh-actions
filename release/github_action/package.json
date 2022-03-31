@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "build": "ncc build --out ./dist --minify"
+    "start": "ncc run --no-source-map-register",
+    "build": "ncc build --out ./dist --minify --no-source-map-register"
   },
   "keywords": [],
   "author": "",
