@@ -120,10 +120,10 @@ function markdownChangelog(lines: ParsedLine[]): string {
 
 async function run(): Promise<void> {
   if (!process.env.GITHUB_REF) {
-    throw new Error('Not GITHUB_REF provided')
+    throw new Error('No GITHUB_REF provided')
   }
   if (!process.env.GITHUB_TOKEN) {
-    throw new Error('Not GITHUB_TOKEN provided')
+    throw new Error('No GITHUB_TOKEN provided')
   }
 
   const lines = await getCommits()
