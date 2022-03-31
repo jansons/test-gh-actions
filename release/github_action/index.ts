@@ -13,12 +13,12 @@ function parseLine(line: string): ParsedLine {
 
   if (splitIdx !== -1) {
     const type = logType(line.substring(0, splitIdx))
-    const log = line.substring(splitIdx + 1).trim()
+    const log = capitalizeFirst(line.substring(splitIdx + 1).trim())
 
     return { type, log }
   }
 
-  return { type: 'Internal', log: line }
+  return { type: 'Internal', log: capitalizeFirst(line) }
 }
 
 function logType(prefix: string): LogGroup | undefined {
@@ -35,6 +35,10 @@ function logType(prefix: string): LogGroup | undefined {
     default:
       return 'Internal'
   }
+}
+
+function capitalizeFirst(input: string): string {
+  return input.charAt(0).toUpperCase() + input.slice(1)
 }
 
 function linkDeps(log: string): string {
