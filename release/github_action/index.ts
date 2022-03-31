@@ -28,6 +28,7 @@ function logType(prefix: string): LogGroup | undefined {
     case 'fix':
       return 'Fixes'
     case 'deps':
+    case 'chore(deps)':
       return 'Dependencies'
     case 'chore(release)':
       return undefined
