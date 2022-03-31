@@ -136,9 +136,6 @@ async function run(): Promise<void> {
 
   const tagName = process.env.GITHUB_REF.replace('refs/tags/', '')
 
-  if (!process.env.GITHUB_TOKEN) {
-    throw new Error('Not GITHUB_TOKEN provided')
-  }
   await getOctokit(process.env.GITHUB_TOKEN).rest.repos.createRelease({
     owner,
     repo,
